@@ -16,7 +16,7 @@ Questions to be answered:
 
 ### Basic settings
 
-```{r}
+```{r echo = TRUE}
 echo = TRUE #Always make code visible
 library(ggplot2)
 library(plyr)
@@ -27,7 +27,7 @@ require(gridExtra)
 ## Loading Data and read
 First I download the data file and unzip it.
 
-```{r}
+```{r echo = TRUE}
 dataUrl <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2"
 zipFile <- "StormData.csv.bz2"
 download.file(dataUrl, destfile = zipFile, method = "curl")
@@ -35,7 +35,7 @@ stormData <- read.csv(zipFile)
 ```
 
 Then I read the generated csv file.
-```{r}
+```{r echo = TRUE}
 dim(stormData)
 str(storm)
 head(stormData)
@@ -44,7 +44,7 @@ head(stormData)
 ### Wrangling the Data
 There are 902297 rows and 37 columns in total. The events in the database start in the year 1950 and end in November 2011. In the earlier years of database there are generally fewer events recorded, most likely due to a lack of good records. More recent years should consider more complete.
 
-```{r}
+```{r echo = TRUE}
 stormData$year <- as.numeric(format(as.Date(stormData$BGN_DATE, 
                                             format ="%m/%d/%Y %H:%M:%S"), "%Y"))
 hist(stormData$year,freq = FALSE, breaks = 40, xlab = "Year", main = paste("Histogram of frequency storms and other severe weather events"))
@@ -53,7 +53,7 @@ hist(stormData$year,freq = FALSE, breaks = 40, xlab = "Year", main = paste("Hist
 
 Based on the above histogram, I observe that the number of event tracked starts significantly increase around 1995. For further analysis I use the subset of data from 1995 to 2011 to get most out of good records.
 
-```{r}
+```{r echo = TRUE}
 storm <- stormData[stormData$year >= 1995,]
 dim(storm)
 ```
@@ -70,7 +70,7 @@ Following columns are used in the data analysis:
 - CROPDMG as a measure of crop damage and hence economic damage in USD
 - CROPDMGEXP as a measure of magnitude of crop damage (e.g. thousands, millions USD, etc)
 
-```{r}
+```{r echo = TRUE}
 
 colNeeded <- c("EVTYPE", "FATALITIES", "INJURIES", "PROPDMG", "PROPDMGEXP", 
                "CROPDMG", "CROPDMGEXP", "year")
@@ -82,6 +82,9 @@ str(storm)
 
 ##### Calculating total for property damage
 Refactor of variable PROPDMGEXP and CROPDMGEXP
+```{r echo = TRUE}
+
+```
 
 
 ### Impact on Public Health

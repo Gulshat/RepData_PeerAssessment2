@@ -1,0 +1,100 @@
+---
+title: "Reproducible Research: Peer Assessment 2"
+---
+Created by Gulshat Badretdinova on February 8, 2017
+
+# Impact of Severe Weather Events on Public Health and Economy in the United States
+
+## Synonpsis
+This report investigates the effect storms and other severe weather events can cause both on public and the economy of the US. I analyse the impact of different weather events based on the storm database collection from the US National Oceanic and Atmospheric Administration's (NOAA) from 1950-2011. 
+
+Questions to be answered:
+
+1) Across the United States, which types of events are most harmful with respect to population health?
+2) Across the United States, which types of events have the greatest economic consequences?
+
+
+### Basic settings
+
+```{r}
+echo = TRUE #Always make code visible
+library(ggplot2)
+library(plyr)
+require(gridExtra)
+
+```
+
+## Loading Data and read
+First I download the data file and unzip it.
+
+```{r}
+dataUrl <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2"
+zipFile <- "StormData.csv.bz2"
+download.file(dataUrl, destfile = zipFile, method = "curl")
+stormData <- read.csv(zipFile)
+```
+
+Then I read the generated csv file.
+```{r}
+dim(stormData)
+str(storm)
+head(stormData)
+```
+
+### Wrangling the Data
+There are 902297 rows and 37 columns in total. The events in the database start in the year 1950 and end in November 2011. In the earlier years of database there are generally fewer events recorded, most likely due to a lack of good records. More recent years should consider more complete.
+
+```{r}
+stormData$year <- as.numeric(format(as.Date(stormData$BGN_DATE, 
+                                            format ="%m/%d/%Y %H:%M:%S"), "%Y"))
+hist(stormData$year,freq = FALSE, breaks = 40, xlab = "Year", main = paste("Histogram of frequency storms and other severe weather events"))
+
+```
+
+Based on the above histogram, I observe that the number of event tracked starts significantly increase around 1995. For further analysis I use the subset of data from 1995 to 2011 to get most out of good records.
+
+```{r}
+storm <- stormData[stormData$year >= 1995,]
+dim(storm)
+```
+
+Now,  the dataset has 681500 rows and 38 columns in total.
+
+Following columns are used in the data analysis:
+
+- EVTYPE as a measure of event type (e.g. tornado, flood, etc.)
+- FATALITIES as a measure of harm to human health
+- INJURIES as a measure of harm to human health
+- PROPDMG as a measure of property damage and hence economic damage in USD
+- PROPDMGEXP as a measure of magnitude of property damage (e.g. thousands, millions USD, etc.)
+- CROPDMG as a measure of crop damage and hence economic damage in USD
+- CROPDMGEXP as a measure of magnitude of crop damage (e.g. thousands, millions USD, etc)
+
+```{r}
+
+colNeeded <- c("EVTYPE", "FATALITIES", "INJURIES", "PROPDMG", "PROPDMGEXP", 
+               "CROPDMG", "CROPDMGEXP", "year")
+storm <- storm[colNeeded]
+dim(storm)
+names(storm)
+str(storm)
+```
+
+##### Calculating total for property damage
+Refactor of variable PROPDMGEXP and CROPDMGEXP
+
+
+### Impact on Public Health
+
+
+
+
+### Impact on Economy
+
+
+
+
+
+
+
+

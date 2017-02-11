@@ -11,6 +11,7 @@ This report investigates the effect storms and other severe weather events can c
 Questions to be answered:
 
 1) Across the United States, which types of events are most harmful with respect to population health?
+
 2) Across the United States, which types of events have the greatest economic consequences?
 
 
@@ -20,6 +21,7 @@ Questions to be answered:
 echo = TRUE #Always make code visible
 library(ggplot2)
 library(plyr)
+library(dplyr)
 require(gridExtra)
 
 ```
@@ -82,11 +84,41 @@ str(storm)
 
 ##### Calculating total for property damage
 Refactor of variable PROPDMGEXP and CROPDMGEXP
+The variables PROPDMGEXP and CROPDMGEXP are the factors of multiplicity for the variables PROPDMG and CROPDM.
 ```{r echo = TRUE}
+propdmgexp <- toupper(as.character(storm$PROPDMGEXP))
+propdmgexp <- gsub("(\\+)|(\\-)|(\\?)", 0, propdmgexp)
+propdmgexp[propdmgexp == "H" | propdmgexp == "2"] <- 1e2
+propdmgexp[propdmgexp == "K" | propdmgexp == "3"] <- 1e3
+propdmgexp[propdmgexp == "M"| propdmgexp == "m" |propdmgexp == "6"] <- 1e6
+propdmgexp[propdmgexp == "B" | propdmgexp == "9"] <- 1e9
+propdmgexp[propdmgexp == "" |propdmgexp == "1"] <- 1
+propdmgexp[propdmgexp == "4"] <- 1e4
+propdmgexp[propdmgexp == "5"] <- 1e5
+propdmgexp[propdmgexp == "7"] <- 1e7
+propdmgexp[propdmgexp == "8"] <- 1e8
 
+cropdmgexp <- toupper(as.character(storm$CROPDMGEXP))
+cropdmgexp[cropdmgexp == "?"] <- 0
+cropdmgexp[cropdmgexp == "K"] <- 1e3
+cropdmgexp[cropdmgexp == "M"] <- 1e6
+cropdmgexp[cropdmgexp == "B"] <- 1e9
+cropdmgexp[cropdmgexp == ""] <- 1
+cropdmgexp[cropdmgexp == "2"] <- 1e2
 ```
 
+Now I will calculate the absolute numeric values and save them into two new variables: ABSPROPDMG and ABSCROPDMG.
+```{r echo=TRUE}
+storm <- mutate(storm, ABSPROPDMG=(as.numeric(as.character(propdmgexp))*storm$PROPDMG)/1000000000,
+                ABSCROPDMG=(as.numeric(as.character(cropdmgexp))*storm$CROPDMG)/1000000000)
+head(storm)
+```
 
+```{r echo=TRUE}
+storm$EVTYPE <- toupper(storm$EVTYPE)
+storm$EVTYPE <- gsub("WIND*")
+
+```
 ### Impact on Public Health
 
 
